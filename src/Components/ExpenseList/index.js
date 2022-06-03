@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { expense as mainDB } from "../../db";
+import { Parser } from "json2csv";
 import moment from "moment";
 class ExpenseListComponent extends React.Component {
   constructor() {
@@ -109,6 +110,38 @@ class ExpenseListComponent extends React.Component {
     });
   };
 
+  exportAsCsv = (from) => {
+    const { expense, list } = this.state;
+    let downloadList = [];
+    const fields = ["Expemse", "Price", "Description", "AddedOn"];
+    if (from === "all") {
+      downloadList = expense.map((e) => ({
+        Expemse: e.expense,
+        Price: e.price,
+        Description: e.desc,
+        AddedOn: e.createdOn,
+      }));
+    } else {
+      downloadList = list.map((e) => ({
+        Expemse: e.expense,
+        Price: e.price,
+        Description: e.desc,
+        AddedOn: e.createdOn,
+      }));
+    }
+    const json2csvParser = new Parser({ fields, unwind: "colors" });
+    const csv = json2csvParser.parse(downloadList);
+    const url = window.URL.createObjectURL(new Blob([csv]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute(
+      "download",
+      `expense${moment().format("YYYY-MM-DD")}.csv`
+    ); // or any other extension
+    document.body.appendChild(link);
+    link.click();
+  };
+
   render() {
     const { page, maxPage, limit, list, sortObj, searchText, limitError } =
       this.state;
@@ -156,6 +189,24 @@ class ExpenseListComponent extends React.Component {
               }}
             />
             {!!limitError && limitError}
+          </div>
+          <div className="form-group">
+            <button
+              type="button"
+              onClick={() => this.exportAsCsv("all")}
+              className="btn btn-primary"
+            >
+              {" "}
+              Export all data as CSV
+            </button>
+            <button
+              type="button"
+              onClick={() => this.exportAsCsv("")}
+              className="btn btn-primary"
+            >
+              {" "}
+              Export Current Data as CSV
+            </button>
           </div>
         </div>
         <div className="row">
