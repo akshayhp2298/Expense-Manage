@@ -45,11 +45,11 @@ class LoginComponent extends Component {
           <div className="col-lg-6">
             <form>
               <div className="form-group">
-                <label for="exampleInputEmail1">Email address</label>
+                <label for="email-text">Email address</label>
                 <input
                   type="email"
                   className="form-control"
-                  id="exampleInputEmail1"
+                  id="email-text"
                   aria-describedby="emailHelp"
                   placeholder="Enter email"
                   value={userName}
@@ -59,11 +59,11 @@ class LoginComponent extends Component {
                 />
               </div>
               <div className="form-group">
-                <label for="exampleInputPassword1">Password</label>
+                <label for="passoword-text">Password</label>
                 <input
                   type="password"
                   className="form-control"
-                  id="exampleInputPassword1"
+                  id="passoword-text"
                   placeholder="Password"
                   value={password}
                   onChange={(e) =>

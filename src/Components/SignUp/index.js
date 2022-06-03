@@ -16,7 +16,6 @@ class SugnUpComponent extends Component {
     e.preventDefault();
     const { name, email, userName, password } = this.state;
     addUser({ name, password, userName, email });
-    console.log("akshay users", users);
   };
 
   handleStateValue = (key, value) => {
@@ -33,13 +32,12 @@ class SugnUpComponent extends Component {
           <div className="col-lg-6">
             <form>
               <div className="form-group">
-                <label for="exampleInputEmail1">Name</label>
+                <label for="name-text">Name</label>
                 <input
-                  type="email"
+                  type="text"
                   className="form-control"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
-                  placeholder="Enter email"
+                  id="name-input"
+                  placeholder="Enter name"
                   value={name}
                   onChange={(e) =>
                     this.handleStateValue("name", e.target.value)
@@ -47,12 +45,11 @@ class SugnUpComponent extends Component {
                 />
               </div>
               <div className="form-group">
-                <label for="exampleInputEmail1">Email address</label>
+                <label for="email-text">Email address</label>
                 <input
                   type="email"
                   className="form-control"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
+                  id="email-input"
                   placeholder="Enter email"
                   value={email}
                   onChange={(e) =>
@@ -61,13 +58,12 @@ class SugnUpComponent extends Component {
                 />
               </div>
               <div className="form-group">
-                <label for="exampleInputEmail1">UserName</label>
+                <label for="username-text">UserName</label>
                 <input
                   type="email"
                   className="form-control"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
-                  placeholder="Enter email"
+                  id="username-input"
+                  placeholder="Enter user name"
                   value={userName}
                   onChange={(e) =>
                     this.handleStateValue("userName", e.target.value)
@@ -75,11 +71,11 @@ class SugnUpComponent extends Component {
                 />
               </div>
               <div className="form-group">
-                <label for="exampleInputPassword1">Password</label>
+                <label for="password-text">Password</label>
                 <input
                   type="password"
                   className="form-control"
-                  id="exampleInputPassword1"
+                  id="password-input"
                   placeholder="Password"
                   value={password}
                   onChange={(e) =>

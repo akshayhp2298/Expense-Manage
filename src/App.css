@@ -5,3 +5,44 @@
   margin-right: -50%;
   transform: translate(-50%, -50%);
 }
+.main-bg {
+  background-color: aliceblue;
+  height: 100vh;
+}
+.header{
+  height: 83px;
+  border-bottom: solid 3px;
+  border-radius: 15px;
+}
+.header-logo{
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    display: flex;
+}
+.header-heading{
+  display: flex;
+  flex-direction: column-reverse;
+  font-size: 42px;
+}
+.header-end{
+  display: flex;
+  flex-direction: column-reverse;
+}
+.nav-items {
+  margin: 10px;
+  padding-top: 10px;
+}
+.expense-header{
+  font-size: 26px;
+}
+.expense-column{
+  font-size: 20px;
+}
+.main-div{
+  height: 100vh;
+}
+.ellipsis-css {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
