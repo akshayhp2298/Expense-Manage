@@ -1,18 +1,20 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 import { addExpense, expense } from "../../db";
 
 const ExpenseAddComponent = () => {
   const [expense, setExpense] = useState("");
   const [price, setPrice] = useState(0);
   const [desc, setDesc] = useState("");
-  const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
   const handleSubmit = (e) => {
+    if (!expense) {
+    }
     e.preventDefault();
     addExpense({ expense, price, desc, createdOn: new Date() });
-    setShowConfirmationMessage(true);
-    setTimeout(() => {
-      setShowConfirmationMessage(false);
-    }, 3000);
+    setExpense("");
+    setPrice(0);
+    setDesc("");
+    toast("Expense has been Added");
   };
   return (
     <form>
@@ -64,11 +66,6 @@ const ExpenseAddComponent = () => {
         </div>
       </div>
       <br />
-      {showConfirmationMessage && (
-        <div class="alert alert-danger" role="alert">
-          <small>You have entered wrong credentials</small>
-        </div>
-      )}
     </form>
   );
 };

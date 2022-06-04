@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { users } from "../../db";
 import history from "../../history";
 
@@ -9,7 +10,6 @@ class LoginComponent extends Component {
     this.state = {
       userName: "",
       password: "",
-      invalidCredentials: false,
     };
   }
   handleStateValue = (key, value) => {
@@ -24,10 +24,10 @@ class LoginComponent extends Component {
       (e) => e.userName === userName && e.password === password
     );
     if (!user) {
-      this.setState({ invalidCredentials: true });
-      setTimeout(() => this.setState({ invalidCredentials: false }), 5000);
+      toast.error("Invalid Credentials");
     } else {
       LoginHandler();
+      toast("Login Success");
     }
   };
 
@@ -90,11 +90,6 @@ class LoginComponent extends Component {
                 </div>
               </div>
               <br />
-              {invalidCredentials && (
-                <div class="alert alert-danger" role="alert">
-                  <small>You have entered wrong credentials</small>
-                </div>
-              )}
             </form>
           </div>
           <div className="col-lg-3"></div>

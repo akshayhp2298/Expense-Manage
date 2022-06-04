@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { expense as mainDB } from "../../db";
+import { deleteExpense, expense as mainDB, exportData } from "../../db";
 import { Parser } from "json2csv";
 import moment from "moment";
 class ExpenseListComponent extends React.Component {
@@ -19,11 +19,16 @@ class ExpenseListComponent extends React.Component {
     };
   }
   componentDidMount() {
+    exportData("from list mount");
     const { expense, limit } = this.state;
     this.setState({
       list: expense.slice(0, limit),
       maxPage: Math.ceil(expense.length / limit),
     });
+    console.log("akshay mounting from expense List", mainDB);
+  }
+  componentWillUnmount() {
+    exportData("from list unmount");
   }
   showPrev = () => {
     const { page } = this.state;
@@ -142,6 +147,15 @@ class ExpenseListComponent extends React.Component {
     link.click();
   };
 
+  handleDelete = (val) => {
+    const { expense, list } = this.state;
+    deleteExpense(val);
+    this.setState({
+      expense: expense.filter((e) => e.id !== val.id),
+      list: list.filter((e) => e.id !== val.id),
+    });
+  };
+
   render() {
     const { page, maxPage, limit, list, sortObj, searchText, limitError } =
       this.state;
@@ -196,7 +210,6 @@ class ExpenseListComponent extends React.Component {
               onClick={() => this.exportAsCsv("all")}
               className="btn btn-primary"
             >
-              {" "}
               Export all data as CSV
             </button>
             <button
@@ -204,7 +217,6 @@ class ExpenseListComponent extends React.Component {
               onClick={() => this.exportAsCsv("")}
               className="btn btn-primary"
             >
-              {" "}
               Export Current Data as CSV
             </button>
           </div>
@@ -311,8 +323,17 @@ class ExpenseListComponent extends React.Component {
                   <div className="col-lg-2 ellipsis-css">{e.expense}</div>
                   <div className="col-lg-2">{e.price}</div>
                   <div className="col-lg-4 ellipsis-css">{e.desc}</div>
-                  <div className="col-lg-3">
+                  <div className="col-lg-2">
                     {moment(e.createdOn).format("D MMM, YYYY HH:MM")}
+                  </div>
+                  <div className="col-lg-1">
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => this.handleDelete(e)}
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
                   </div>
                 </div>
               );

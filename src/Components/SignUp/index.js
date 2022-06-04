@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { addUser, users } from "../../db";
 
 class SugnUpComponent extends Component {
@@ -14,8 +15,11 @@ class SugnUpComponent extends Component {
   }
   handleSignUp = (e) => {
     e.preventDefault();
+    const { LoginHandler } = this.props;
     const { name, email, userName, password } = this.state;
     addUser({ name, password, userName, email });
+    toast("SignUp success");
+    LoginHandler();
   };
 
   handleStateValue = (key, value) => {
