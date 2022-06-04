@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { users } from "../../db";
-import history from "../../history";
 
 class LoginComponent extends Component {
   constructor() {
@@ -26,8 +25,8 @@ class LoginComponent extends Component {
     if (!user) {
       toast.error("Invalid Credentials");
     } else {
-      LoginHandler();
-      toast("Login Success");
+      LoginHandler(user);
+      toast.success("Login Success");
     }
   };
 
@@ -37,7 +36,7 @@ class LoginComponent extends Component {
   };
 
   render() {
-    const { userName, password, invalidCredentials } = this.state;
+    const { userName, password } = this.state;
     return (
       <div className="container center">
         <div className="row">
@@ -87,6 +86,19 @@ class LoginComponent extends Component {
                       SignUP
                     </button>
                   </Link>
+                </div>
+                <div className="ml-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      toast.info(
+                        'Use "admin" as username & password\n Or SignUp'
+                      );
+                    }}
+                    className="btn btn-primary"
+                  >
+                    Hint
+                  </button>
                 </div>
               </div>
               <br />

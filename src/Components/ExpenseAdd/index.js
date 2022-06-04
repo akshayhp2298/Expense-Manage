@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { addExpense, expense } from "../../db";
+import { addExpense } from "../../db";
 
-const ExpenseAddComponent = () => {
+const ExpenseAddComponent = ({ user }) => {
   const [expense, setExpense] = useState("");
   const [price, setPrice] = useState(0);
   const [desc, setDesc] = useState("");
@@ -10,11 +10,17 @@ const ExpenseAddComponent = () => {
     if (!expense) {
     }
     e.preventDefault();
-    addExpense({ expense, price, desc, createdOn: new Date() });
+    addExpense({
+      userId: user.userId,
+      expense,
+      price: +price,
+      desc,
+      createdOn: new Date(),
+    });
     setExpense("");
     setPrice(0);
     setDesc("");
-    toast("Expense has been Added");
+    toast.success("Expense has been Added");
   };
   return (
     <form>

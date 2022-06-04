@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { addUser, users } from "../../db";
+import { addUser } from "../../db";
 
 class SugnUpComponent extends Component {
   constructor() {
@@ -17,9 +17,21 @@ class SugnUpComponent extends Component {
     e.preventDefault();
     const { LoginHandler } = this.props;
     const { name, email, userName, password } = this.state;
+    if (!name || !email || !userName || !password) {
+      const emptyValue = [
+        { key: "Name", value: name },
+        { key: "Email", value: email },
+        { key: "User Name", value: userName },
+        { key: "Password", value: password },
+      ]
+        .filter((e) => !e.value)
+        .map((e) => e.key);
+      toast.error(`${emptyValue.join(", ")} can not be empty`);
+      return;
+    }
     addUser({ name, password, userName, email });
-    toast("SignUp success");
-    LoginHandler();
+    toast.success("SignUp success");
+    LoginHandler({ name, password, userName, email });
   };
 
   handleStateValue = (key, value) => {

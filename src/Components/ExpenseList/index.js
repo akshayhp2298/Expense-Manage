@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { deleteExpense, expense as mainDB, exportData } from "../../db";
+import React from "react";
+import { currentExpense, deleteExpense, expense as mainDB } from "../../db";
 import { Parser } from "json2csv";
 import moment from "moment";
 class ExpenseListComponent extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      expense: mainDB,
+      expense: [],
       list: [],
       page: 1,
       limit: 10,
@@ -19,17 +19,28 @@ class ExpenseListComponent extends React.Component {
     };
   }
   componentDidMount() {
-    exportData("from list mount");
-    const { expense, limit } = this.state;
-    this.setState({
-      list: expense.slice(0, limit),
-      maxPage: Math.ceil(expense.length / limit),
+    const { allExpense } = this.props;
+    this.setState({ expense: allExpense ? mainDB : currentExpense() }, () => {
+      const { expense, limit } = this.state;
+      this.setState({
+        list: expense.slice(0, limit),
+        maxPage: Math.ceil(expense.length / limit),
+      });
     });
-    console.log("akshay mounting from expense List", mainDB);
   }
-  componentWillUnmount() {
-    exportData("from list unmount");
+  componentDidUpdate(prevProps) {
+    const { allExpense } = this.props;
+    if (prevProps.allExpense !== allExpense) {
+      this.setState({ expense: allExpense ? mainDB : currentExpense() }, () => {
+        const { expense, limit } = this.state;
+        this.setState({
+          list: expense.slice(0, limit),
+          maxPage: Math.ceil(expense.length / limit),
+        });
+      });
+    }
   }
+
   showPrev = () => {
     const { page } = this.state;
     this.setState({ page: page - 1 }, () => {
@@ -163,7 +174,7 @@ class ExpenseListComponent extends React.Component {
     return (
       <>
         <div className="row">
-          <div className="form-group">
+          <div className="form-group col-lg-3">
             <label for="search-text">Enter Any Search Value</label>
             <input
               type="text"
@@ -178,7 +189,7 @@ class ExpenseListComponent extends React.Component {
               }}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group col-lg-4">
             <label for="limit-text">
               Enter Limit(Current Limit is {limit})
             </label>
@@ -204,18 +215,18 @@ class ExpenseListComponent extends React.Component {
             />
             {!!limitError && limitError}
           </div>
-          <div className="form-group">
+          <div className="form-group col-lg-5">
             <button
               type="button"
               onClick={() => this.exportAsCsv("all")}
-              className="btn btn-primary"
+              className="btn btn-link"
             >
               Export all data as CSV
             </button>
             <button
               type="button"
               onClick={() => this.exportAsCsv("")}
-              className="btn btn-primary"
+              className="btn btn-link"
             >
               Export Current Data as CSV
             </button>

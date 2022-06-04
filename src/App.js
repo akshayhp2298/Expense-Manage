@@ -1,53 +1,44 @@
 import "./App.css";
-import { Routes, Route, Link, Outlet, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginComponent from "./Components/Login";
 import SignUpComponent from "./Components/SignUp";
 import NotFoundComponent from "./Components/NotFound";
 import MainLayout from "./Components/MainLayout";
 import ExpenseList from "./Components/ExpenseList";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DashBoardComponent from "./Components/DashBoard";
 import ExpenseAddComponent from "./Components/ExpenseAdd";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { importData, exportData } from "./db";
-import { render } from "@testing-library/react";
-
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
       auth: false,
+      user: {},
     };
   }
   componentDidMount() {
-    this.setState({ auth: localStorage.getItem("isAuthenticated") });
-    let data = { users: [], expense: [] };
-    try {
-      data = JSON.parse(localStorage.getItem("myLocalDB") || "");
-    } catch (e) {
-      // ignore
-    }
-    alert("app mounted");
-    exportData("from app mount");
-    importData(data);
+    this.setState({
+      auth: localStorage.getItem("isAuthenticated"),
+      user: JSON.parse(localStorage.getItem("authenticatedUser")),
+    });
   }
-  componentWillUnmount() {
-    const data = exportData("from app unmount");
-    alert(`unmounting ${data.expense.length}`);
-    localStorage.setItem("myLocalDB", JSON.stringify(data));
-  }
+  componentWillUnmount() {}
   setAuth = (val) => {
     this.setState({ auth: val });
   };
-  setAuthorization = () => {
+  setAuthorization = (user) => {
     localStorage.setItem("isAuthenticated", true);
+    localStorage.setItem("authenticatedUser", JSON.stringify(user));
+    this.setState({ user });
     this.setAuth(true);
   };
   removeAuthorization = () => {
     localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("authenticatedUser");
     this.setAuth(false);
-    toast("You Have Logged out!!!");
+    toast.info("You Have Logged out!!!");
   };
 
   render() {
@@ -61,7 +52,7 @@ class App extends React.Component {
                 path="login"
                 element={
                   <LoginComponent
-                    LoginHandler={() => this.setAuthorization()}
+                    LoginHandler={(user) => this.setAuthorization(user)}
                   />
                 }
               />
@@ -69,7 +60,7 @@ class App extends React.Component {
                 path="signup"
                 element={
                   <SignUpComponent
-                    LoginHandler={() => this.setAuthorization()}
+                    LoginHandler={(user) => this.setAuthorization(user)}
                   />
                 }
               />
@@ -80,8 +71,11 @@ class App extends React.Component {
               <Route
                 path="/"
                 element={
-                  <MainLayout LogoutHandler={() => this.removeAuthorization()}>
-                    <DashBoardComponent />
+                  <MainLayout
+                    LogoutHandler={() => this.removeAuthorization()}
+                    user={this.state.user}
+                  >
+                    <DashBoardComponent user={this.state.user} />
                   </MainLayout>
                 }
               >
@@ -90,6 +84,7 @@ class App extends React.Component {
                   element={
                     <MainLayout
                       LogoutHandler={() => this.removeAuthorization()}
+                      user={this.state.user}
                     >
                       <DashBoardComponent />
                     </MainLayout>
@@ -97,9 +92,23 @@ class App extends React.Component {
                 />
               </Route>
               <Route
+                path="/expense/all/list"
+                element={
+                  <MainLayout
+                    LogoutHandler={() => this.removeAuthorization()}
+                    user={this.state.user}
+                  >
+                    <ExpenseList allExpense />
+                  </MainLayout>
+                }
+              />
+              <Route
                 path="/expense/list"
                 element={
-                  <MainLayout LogoutHandler={() => this.removeAuthorization()}>
+                  <MainLayout
+                    LogoutHandler={() => this.removeAuthorization()}
+                    user={this.state.user}
+                  >
                     <ExpenseList />
                   </MainLayout>
                 }
@@ -107,8 +116,11 @@ class App extends React.Component {
               <Route
                 path="/expense/add"
                 element={
-                  <MainLayout LogoutHandler={() => this.removeAuthorization()}>
-                    <ExpenseAddComponent />
+                  <MainLayout
+                    LogoutHandler={() => this.removeAuthorization()}
+                    user={this.state.user}
+                  >
+                    <ExpenseAddComponent user={this.state.user} />
                   </MainLayout>
                 }
               />
